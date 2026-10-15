@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  # ---------------------------------------------------------
+  # AI Models & Services Integration Component (AIMIC)
+  # ---------------------------------------------------------
+  ai_integration:
+    image: ptriantis/ai-integration:latest
+    container_name: ai_integration_component
+    ports:
+      - "${AIMIC_PORT:-8100}:${AIMIC_PORT:-8100}"
+    environment:
+      MIDDLEWARE_URL: ${MIDDLEWARE_URL}
+      MIDDLEWARE_USER: ${MIDDLEWARE_USER}
+      MIDDLEWARE_PASS: ${MIDDLEWARE_PASS}
+      DSP_CONNECTOR_API_URL: ${DSP_CONNECTOR_API_URL}
+      DB_PATH: ./data/models.db
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT:-http://minio:9000}
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+      MINIO_REGION: ${MINIO_REGION:-us-east-1}
+      MAX_FILE_SIZE_BYTES: ${MAX_FILE_SIZE_BYTES:-524288000}
+    volumes:
+      - ./aimic_data:/app/data
+      - ./local_staging:/data/staging
+    restart: unless-stopped
